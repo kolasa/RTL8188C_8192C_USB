@@ -15,10 +15,10 @@ echo "##################################################"
 #			Decompress the driver source tal ball
 ################################################################################
 cd driver
-Drvfoulder=`ls |grep .tar.gz`
-echo "Decompress the driver source tar ball:"
-echo "	"$Drvfoulder
-tar zxvf $Drvfoulder
+#Drvfoulder=`ls |grep .tar.gz`
+#echo "Decompress the driver source tar ball:"
+#echo "	"$Drvfoulder
+#tar zxvf $Drvfoulder
 
 Drvfoulder=`ls |grep -iv '.tar.gz'`
 echo "$Drvfoulder"
