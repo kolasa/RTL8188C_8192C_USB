@@ -255,6 +255,18 @@ static char rtw_proc_name[IFNAMSIZ];
 static struct proc_dir_entry *rtw_proc = NULL;
 static int	rtw_proc_cnt = 0;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+static int drv_version_proc_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_drv_version, NULL);
+}
+
+static const struct file_operations drv_version_fops = {
+        .open = drv_version_proc_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+};
+#endif
+
 void rtw_proc_init_one(struct net_device *dev)
 {
 	struct proc_dir_entry *dir_dev = NULL;
@@ -289,7 +301,7 @@ void rtw_proc_init_one(struct net_device *dev)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		entry = create_proc_read_entry("ver_info", S_IFREG | S_IRUGO, rtw_proc, proc_get_drv_version, dev);				   
 #else
-		entry = proc_create_data("ver_info", S_IFREG | S_IRUGO, rtw_proc, proc_get_drv_version, dev);				   
+		entry = proc_create_data("ver_info", S_IFREG | S_IRUGO, rtw_proc, &drv_version_fops, dev);				   
 #endif
 		if (!entry) {
 			DBG_871X("Unable to create_proc_read_entry!\n"); 

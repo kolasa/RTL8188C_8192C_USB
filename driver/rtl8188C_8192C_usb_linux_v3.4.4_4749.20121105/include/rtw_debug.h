@@ -285,10 +285,13 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 
 #ifdef CONFIG_PROC_DEBUG
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	int proc_get_drv_version(char *page, char **start,
 			  off_t offset, int count,
 			  int *eof, void *data);
-
+#else
+	int proc_get_drv_version(struct seq_file *m, void *data);
+#endif
 	int proc_get_write_reg(char *page, char **start,
 			  off_t offset, int count,
 			  int *eof, void *data);

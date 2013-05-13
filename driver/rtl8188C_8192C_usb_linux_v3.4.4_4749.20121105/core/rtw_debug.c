@@ -62,6 +62,7 @@
 #ifdef CONFIG_PROC_DEBUG
 #include <rtw_version.h>
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0) 
 int proc_get_drv_version(char *page, char **start,
 			  off_t offset, int count,
 			  int *eof, void *data)
@@ -75,6 +76,14 @@ int proc_get_drv_version(char *page, char **start,
 	*eof = 1;
 	return len;
 }
+#else
+int proc_get_drv_version(struct seq_file *m, void* data)
+{
+	struct net_device *dev = data;
+	
+	return seq_printf(m, "%s\n", DRIVERVERSION); 
+}
+#endif
 
 int proc_get_write_reg(char *page, char **start,
 			  off_t offset, int count,
