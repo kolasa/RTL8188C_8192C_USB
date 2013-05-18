@@ -255,16 +255,244 @@ static char rtw_proc_name[IFNAMSIZ];
 static struct proc_dir_entry *rtw_proc = NULL;
 static int	rtw_proc_cnt = 0;
 
+/*
+ * seq_file wrappers for procfile show routines, kernel >= 3.10
+ */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
-static int drv_version_proc_open(struct inode *inode, struct file *file){
-        return single_open(file, proc_get_drv_version, NULL);
+
+static int proc_get_drv_version_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_drv_version, PDE_DATA(inode));
 }
 
-static const struct file_operations drv_version_fops = {
-        .open = drv_version_proc_open,
+static const struct file_operations proc_get_drv_version_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_drv_version_open,
         .read = seq_read,
         .llseek = seq_lseek,
+	.release = single_release,
 };
+
+static int proc_get_write_reg_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_write_reg, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_write_reg_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_write_reg_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.write = proc_set_write_reg,
+	.release = seq_release,
+};
+
+static int proc_get_read_reg_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_read_reg, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_read_reg_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_read_reg_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.write = proc_set_read_reg,
+	.release = seq_release,
+};
+
+static int proc_get_rssi_disp_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_rssi_disp, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_rssi_disp_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_rssi_disp_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.write = proc_set_rssi_disp,
+	.release = seq_release,
+};
+
+static int proc_get_ampdu_enable_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_ampdu_enable, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_ampdu_enable_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_ampdu_enable_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.write = proc_set_ampdu_enable,
+	.release = seq_release,
+};
+
+static int proc_get_rx_signal_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_rx_signal, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_rx_signal_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_rx_signal_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.write = proc_set_rx_signal,
+	.release = seq_release,
+};
+
+static int proc_get_fwstate_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_fwstate, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_fwstate_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_fwstate_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_mlmext_state_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_mlmext_state, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_mlmext_state_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_mlmext_state_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_qos_option_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_qos_option, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_qos_option_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_qos_option_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_ht_option_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_ht_option, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_ht_option_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_ht_option_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_rf_info_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_rf_info, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_rf_info_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_rf_info_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_ap_info_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_ap_info, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_ap_info_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_ap_info_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_adapter_state_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_adapter_state, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_adapter_state_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_adapter_state_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_trx_info_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_trx_info, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_trx_info_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_trx_info_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+static int proc_get_sec_info_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_sec_info, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_sec_info_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_sec_info_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+# ifdef CONFIG_AP_MODE
+
+static int proc_get_all_sta_info_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_all_sta_info, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_all_sta_info_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_all_sta_info_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+# endif
+
+# ifdef DBG_MEMORY_LEAK
+
+static int proc_get_malloc_cnt_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_malloc_cnt, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_malloc_cnt_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_malloc_cnt_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+# endif
+
+# ifdef CONFIG_FIND_BEST_CHANNEL
+
+static int proc_get_best_channel_open(struct inode *inode, struct file *file){
+        return single_open(file, proc_get_best_channel, PDE_DATA(inode));
+}
+
+static const struct file_operations proc_get_best_channel_fops = {
+        .owner = THIS_MODULE,
+	.open = proc_get_best_channel_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+	.release = single_release,
+};
+
+# endif
+
 #endif
 
 void rtw_proc_init_one(struct net_device *dev)
@@ -287,11 +515,11 @@ void rtw_proc_init_one(struct net_device *dev)
 #if(LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24))
 		rtw_proc=create_proc_entry(rtw_proc_name, S_IFDIR, proc_net);
 #else
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+# if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		rtw_proc=create_proc_entry(rtw_proc_name, S_IFDIR, init_net.proc_net);
-#else
+# else
 		rtw_proc=proc_mkdir(rtw_proc_name, init_net.proc_net);
-#endif
+# endif
 #endif
 		if (rtw_proc == NULL) {
 			DBG_8192C(KERN_ERR "Unable to create rtw_proc directory\n");
@@ -301,15 +529,13 @@ void rtw_proc_init_one(struct net_device *dev)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 		entry = create_proc_read_entry("ver_info", S_IFREG | S_IRUGO, rtw_proc, proc_get_drv_version, dev);				   
 #else
-		entry = proc_create_data("ver_info", S_IFREG | S_IRUGO, rtw_proc, &drv_version_fops, dev);				   
+		entry = proc_create_data("ver_info", S_IFREG | S_IRUGO, rtw_proc, &proc_get_drv_version_fops, dev);				   
 #endif
 		if (!entry) {
 			DBG_871X("Unable to create_proc_read_entry!\n"); 
 			return;
 		}
 	}
-
-	
 
 	if(padapter->dir_dev == NULL)
 	{
@@ -352,7 +578,7 @@ void rtw_proc_init_one(struct net_device *dev)
 				   dir_dev, proc_get_write_reg, dev);				   
 #else
 	entry = proc_create_data("write_reg", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_write_reg, dev);				   
+				   dir_dev, &proc_get_write_reg_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
@@ -365,7 +591,7 @@ void rtw_proc_init_one(struct net_device *dev)
 				   dir_dev, proc_get_read_reg, dev);				   
 #else
 	entry = proc_create_data("read_reg", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_read_reg, dev);				   
+				   dir_dev, &proc_get_read_reg_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
@@ -378,104 +604,95 @@ void rtw_proc_init_one(struct net_device *dev)
 				   dir_dev, proc_get_fwstate, dev);				   
 #else
 	entry = proc_create_data("fwstate", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_fwstate, dev);				   
+				   dir_dev, &proc_get_fwstate_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("sec_info", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_sec_info, dev);				   
 #else
 	entry = proc_create_data("sec_info", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_sec_info, dev);				   
+				   dir_dev, &proc_get_sec_info_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("mlmext_state", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_mlmext_state, dev);				   
 #else
 	entry = proc_create_data("mlmext_state", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_mlmext_state, dev);				   
+				   dir_dev, &proc_get_mlmext_state_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("qos_option", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_qos_option, dev);				   
 #else
 	entry = proc_create_data("qos_option", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_qos_option, dev);				   
+				   dir_dev, &proc_get_qos_option_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("ht_option", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_ht_option, dev);				   
 #else
 	entry = proc_create_data("ht_option", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_ht_option, dev);				   
+				   dir_dev, &proc_get_ht_option_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("rf_info", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_rf_info, dev);				   
 #else
 	entry = proc_create_data("rf_info", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_rf_info, dev);				   
+				   dir_dev, &proc_get_rf_info_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-	
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("ap_info", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_ap_info, dev);				   
 #else
 	entry = proc_create_data("ap_info", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_ap_info, dev);				   
+				   dir_dev, &proc_get_ap_info_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("adapter_state", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_adapter_state, dev);				   
 #else
 	entry = proc_create_data("adapter_state", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_adapter_state, dev);				   
+				   dir_dev, &proc_get_adapter_state_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
-
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("trx_info", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_trx_info, dev);				   
 #else
 	entry = proc_create_data("trx_info", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_trx_info, dev);				   
+				   dir_dev, &proc_get_trx_info_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
@@ -484,45 +701,50 @@ void rtw_proc_init_one(struct net_device *dev)
 
 #ifdef CONFIG_AP_MODE
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+# if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("all_sta_info", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_all_sta_info, dev);				   
-#else
+# else
 	entry = proc_create_data("all_sta_info", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_all_sta_info, dev);				   
-#endif
+				   dir_dev, &proc_get_all_sta_info_fops, dev);				   
+# endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
+
 #endif
 
 #ifdef DBG_MEMORY_LEAK
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+
+# if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("_malloc_cnt", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_malloc_cnt, dev);				   
-#else
+# else
 	entry = proc_create_data("_malloc_cnt", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_malloc_cnt, dev);				   
-#endif
+				   dir_dev, &proc_get_malloc_cnt_fops, dev);				   
+# endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
+
 #endif
 
 #ifdef CONFIG_FIND_BEST_CHANNEL
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+
+# if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	entry = create_proc_read_entry("best_channel", S_IFREG | S_IRUGO,
 				   dir_dev, proc_get_best_channel, dev);				   
-#else
+# else
 	entry = proc_create_data("best_channel", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_best_channel, dev);				   
-#endif
+				   dir_dev, &proc_get_best_channel_fops, dev);				   
+# endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
 		return;
 	}
+
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
@@ -530,7 +752,7 @@ void rtw_proc_init_one(struct net_device *dev)
 				   dir_dev, proc_get_rx_signal, dev);				   
 #else
 	entry = proc_create_data("rx_signal", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_rx_signal, dev);				   
+				   dir_dev, &proc_get_rx_signal_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
@@ -543,7 +765,7 @@ void rtw_proc_init_one(struct net_device *dev)
 				   dir_dev, proc_get_ampdu_enable, dev);				   
 #else
 	entry = proc_create_data("ampdu_enable", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_ampdu_enable, dev);				   
+				   dir_dev, &proc_get_ampdu_enable_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
@@ -557,7 +779,7 @@ void rtw_proc_init_one(struct net_device *dev)
 				   dir_dev, proc_get_rssi_disp, dev);				   
 #else
 	entry = proc_create_data("rssi_disp", S_IFREG | S_IRUGO,
-				   dir_dev, proc_get_rssi_disp, dev);				   
+				   dir_dev, &proc_get_rssi_disp_fops, dev);				   
 #endif
 	if (!entry) {
 		DBG_871X("Unable to create_proc_read_entry!\n"); 
@@ -904,7 +1126,7 @@ u32 rtw_start_drv_threads(_adapter *padapter)
 	RT_TRACE(_module_os_intfs_c_,_drv_info_,("+rtw_start_drv_threads\n"));
 
 #ifdef CONFIG_SDIO_HCI
-+	if(!start_kthread(&padapter->xmitThread, rtw_xmit_thread, padapter, "8192cu-xmit"))
+	if(!start_kthread(&padapter->xmitThread, rtw_xmit_thread, padapter, "8192cu-xmit"))
 	_status = _FAIL;
 #endif
 

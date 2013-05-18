@@ -1564,6 +1564,7 @@ int start_kthread(_thread_hdl_ *t_hdl, int (*threadfn)(void *data),
 	*t_hdl = kthread_run(threadfn, data, name);
 	if(IS_ERR(*t_hdl))
 #endif
-    return 0;
+	    return 0;
+    return 1;
 }
 #endif
