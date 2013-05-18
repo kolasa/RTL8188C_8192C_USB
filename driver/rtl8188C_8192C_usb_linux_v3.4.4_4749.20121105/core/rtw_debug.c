@@ -694,7 +694,7 @@ int proc_get_rx_signal(char *page, char **start,
 }
 
 int proc_set_rx_signal(struct file *file, const char *buffer,
-		unsigned long count, void *data);
+		unsigned long count, void *data)
 {
 	struct net_device *dev = (struct net_device *)data;
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(dev);
