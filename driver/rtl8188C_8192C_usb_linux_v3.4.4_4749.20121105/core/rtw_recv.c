@@ -3305,7 +3305,11 @@ static int amsdu_to_msdu(_adapter *padapter, union recv_frame *prframe)
 			{
 				sub_skb->data = pdata;
 				sub_skb->len = nSubframe_Length;
+#ifdef __x86_64__
+				sub_skb->tail = (unsigned long)sub_skb->data + nSubframe_Length;
+#else
 				sub_skb->tail = sub_skb->data + nSubframe_Length;
+#endif
 			}
 			else
 			{

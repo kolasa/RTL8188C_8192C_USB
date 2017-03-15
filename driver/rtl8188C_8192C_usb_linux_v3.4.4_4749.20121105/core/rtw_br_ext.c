@@ -124,13 +124,12 @@ static __inline__ int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_ta
 static int skb_pull_and_merge(struct sk_buff *skb, unsigned char *src, int len)
 {
 	int tail_len;
-	unsigned long end, tail;
+	unsigned long end = (unsigned long) src + len;
+	unsigned long tail = (unsigned long) skb->tail;
 
-	if ((src+len) > skb->tail || skb->len < len)
+	if (end > tail || skb->len < len)
 		return -1;
 
-	tail = (unsigned long)skb->tail;
-	end = (unsigned long)src+len;
 	if (tail < end)
 		return -1;
 
@@ -1633,13 +1632,13 @@ void dhcp_flag_bcast(_adapter *priv, struct sk_buff *skb)
 
 			if(iph->protocol == IPPROTO_UDP) // UDP
 			{
-				struct udphdr *udph = (struct udphdr *)((unsigned int)iph + (iph->ihl << 2));
+				struct udphdr *udph = (struct udphdr *)((unsigned long)iph + (iph->ihl << 2));
 
 				if((udph->source == __constant_htons(CLIENT_PORT))
 					&& (udph->dest == __constant_htons(SERVER_PORT))) // DHCP request
 				{
 					struct dhcpMessage *dhcph =
-						(struct dhcpMessage *)((unsigned int)udph + sizeof(struct udphdr));
+						(struct dhcpMessage *)((unsigned long)udph + sizeof(struct udphdr));
 
 					if(dhcph->cookie == __constant_htonl(DHCP_MAGIC)) // match magic word
 					{
